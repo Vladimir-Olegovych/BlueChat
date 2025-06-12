@@ -11,12 +11,12 @@ import com.gigcreator.bluechat.feature.menu.screens.MenuDestinations
 import com.gigcreator.bluechat.feature.splash.contract.SplashContract
 import com.gigcreator.bluechat.feature.splash.contract.SplashViewModel
 import com.gigcreator.bluechat.feature.splash.screens.SplashDestinations
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SplashFragment : FeatureFragment(SplashDestinations.Splash) {
 
     private lateinit var binding: FragmentSplashBinding
-    private val viewModel by activityViewModel<SplashViewModel>()
+    private val viewModel by viewModel<SplashViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

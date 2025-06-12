@@ -6,7 +6,7 @@ import com.gigcreator.domain.feature.permission.repository.PermissionRepository
 class PermissionRepositoryImpl(
     private val permissionDataSource: PermissionDataSource,
 ): PermissionRepository {
-    override fun checkPermissions(): Boolean {
+    override fun arePermissionsGranted(): Boolean {
         return permissionDataSource.arePermissionsGranted()
     }
 

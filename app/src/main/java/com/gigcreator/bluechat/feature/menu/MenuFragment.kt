@@ -27,5 +27,4 @@ class MenuFragment() : FeatureFragment(MenuDestinations.Menu) {
             getNavController().navigate(ScanDestinations.Scan)
         }
     }
-
 }

@@ -5,11 +5,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.gigcreator.bluechat.core.activity.ActivityResultUtils
 import com.gigcreator.bluechat.core.feature.Destination
 import com.gigcreator.bluechat.core.feature.Feature
+import com.gigcreator.bluechat.core.fragment.FeatureFragment
 import com.gigcreator.bluechat.core.navigation.NavController
 import com.gigcreator.bluechat.core.navigation.NavigationListener
-import com.gigcreator.bluechat.core.activity.ActivityResultUtils
 import com.gigcreator.bluechat.feature.menu.MenuFragment
 import com.gigcreator.bluechat.feature.scan.ScanFragment
 import com.gigcreator.bluechat.feature.splash.SplashFragment
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         ActivityResultUtils.initialize(this)
 
-        val features = arrayOf<Feature>(
+        val features = arrayOf<FeatureFragment>(
             SplashFragment(),
             MenuFragment(),
             ScanFragment()
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     private fun registerNavigationForFeatures(
         navController: NavController<Destination>,
         currentDestination: Destination,
-        features: Array<Feature>,
+        features: Array<FeatureFragment>,
     ) {
         for (feature in features) {
             val fragment = feature.buildNavigation(navController, currentDestination)

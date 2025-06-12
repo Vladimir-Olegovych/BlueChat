@@ -9,8 +9,8 @@ open class FeatureFragment(
     protected val destination: Destination,
 ): Feature, Fragment() {
 
-    private lateinit var navController: NavController<Destination>
-    protected fun getNavController(): NavController<Destination> = navController
+    private var navController: NavController<Destination>? = null
+    protected fun getNavController(): NavController<Destination> = navController!!
 
     override fun buildNavigation(
         navController: NavController<Destination>,
@@ -20,6 +20,5 @@ open class FeatureFragment(
         this.navController = navController
         return this
     }
-
 
 }

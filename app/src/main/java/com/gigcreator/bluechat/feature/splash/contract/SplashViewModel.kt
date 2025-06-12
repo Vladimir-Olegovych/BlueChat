@@ -15,7 +15,7 @@ class SplashViewModel(
     }
 
     private fun determineNavRoute() {
-        if (permissionUseCase.checkPermissions()) setEffect(SplashContract.Effect.OpenMenu)
+        if (permissionUseCase.arePermissionsGranted()) setEffect(SplashContract.Effect.OpenMenu)
         else setEffect(SplashContract.Effect.RequestPermissions(permissionUseCase.getPermissions()))
     }
 
