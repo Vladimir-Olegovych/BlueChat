@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BlueChat</string>
+    <string name="blue_chat">Blue Chat 0.0.1</string>
+    <string name="search_for_connection">Search for connection</string>
+    <string name="back">back</string>
+    <string name="permissions">Please grant permissions!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
