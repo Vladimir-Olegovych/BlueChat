@@ -7,6 +7,7 @@ import com.gigcreator.bluechat.core.vm.ViewState
 object SplashContract {
     sealed interface Event : ViewEvent {
         data object DetermineRoute : Event
+        data object PermissionSuccess : Event
     }
 
     sealed interface State : ViewState {
@@ -15,6 +16,7 @@ object SplashContract {
 
     sealed interface Effect : ViewEffect {
         data object OpenMenu : Effect
+        class RequestPermissions(val permissions: Array<String>) : Effect
     }
 
 }

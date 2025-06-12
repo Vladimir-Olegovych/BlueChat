@@ -1,6 +1,5 @@
 package com.gigcreator.bluechat.feature.splash.contract
 
-import com.gigcreator.bluechat.core.activity.ActivityResultUtils
 import com.gigcreator.bluechat.core.vm.MasterViewModel
 import com.gigcreator.domain.feature.permission.usecase.PermissionUseCase
 
@@ -12,19 +11,12 @@ class SplashViewModel(
 
     override fun handleEvent(event: SplashContract.Event) = when(event) {
         is SplashContract.Event.DetermineRoute -> determineNavRoute()
+        is SplashContract.Event.PermissionSuccess -> setEffect(SplashContract.Effect.OpenMenu)
     }
 
     private fun determineNavRoute() {
         if (permissionUseCase.checkPermissions()) setEffect(SplashContract.Effect.OpenMenu)
-        else {
-            ActivityResultUtils.requestResult(
-                array = permissionUseCase.getPermissions(),
-                onSuccess = {
-                    setEffect(SplashContract.Effect.OpenMenu)
-                },
-                onFailure = {}
-            )
-        }
+        else setEffect(SplashContract.Effect.RequestPermissions(permissionUseCase.getPermissions()))
     }
 
 }
