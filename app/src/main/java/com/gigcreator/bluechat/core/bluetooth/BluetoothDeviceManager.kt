@@ -1,28 +1,34 @@
 package com.gigcreator.bluechat.core.bluetooth
 
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import com.gigcreator.bluechat.core.parcelable
-import com.gigcreator.domain.feature.permission.repository.PermissionRepository
+import com.gigcreator.bluechat.core.bluetooth.listeners.BluetoothManagerListener
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class BluetoothDeviceManager(
-    private val permissionRepository: PermissionRepository,
-    private val scope: CoroutineScope,
-    applicationContext: Context
+    private val bluetoothReceiverManager: BluetoothReceiverManager,
+    private val applicationContext: Context,
+    private val scope: CoroutineScope
 ) {
 
-    private val bluetoothManager = applicationContext.applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+    private val bluetoothManager = applicationContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
     private val bluetoothAdapter = bluetoothManager.adapter
-    private val receiver = BluetoothReceiver()
+    private var scanDelay: Job? = null
+
+    private var listener: BluetoothManagerListener? = null
+
+    fun getBondedDevices(): Set<BluetoothDevice> {
+        return bluetoothAdapter?.bondedDevices ?: emptySet()
+    }
+
+    fun setListener(listener: BluetoothManagerListener) {
+        bluetoothReceiverManager.setListener(listener)
+        this.listener = listener
+    }
 
     fun isBluetoothAvailable(): Boolean {
         return bluetoothAdapter != null
@@ -32,45 +38,31 @@ class BluetoothDeviceManager(
         return bluetoothAdapter?.isEnabled == true
     }
 
-    fun startScanDevices(activity: Activity): Boolean {
-        if (receiver.registered) return false
-        if (bluetoothAdapter.isDiscovering) bluetoothAdapter.cancelDiscovery()
+    fun connectDevice(device: BluetoothDevice) {
+        device.createBond()
 
-        val filter = IntentFilter().apply {
-            addAction(BluetoothDevice.ACTION_FOUND)
-            addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-            addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+    }
+
+    fun stopScanDevices(){
+        listener?.onStopScanDevices()
+        scanDelay?.cancel()
+        scanDelay = null
+        bluetoothAdapter.cancelDiscovery()
+    }
+
+    fun startScanDevices() {
+        stopScanDevices()
+        bluetoothAdapter.startDiscovery()
+        scanDelay = scope.launch {
+            delay(30000)
+            stopScanDevices()
         }
-        activity.registerReceiver(receiver, filter)
-        receiver.registered = true
-
-        val hasPermissions = permissionRepository.arePermissionsGranted()
-        //if (!hasPermissions) return false
-        println("scan ${bluetoothAdapter.startDiscovery()}")
-
-
-        scope.launch {
-            delay(12000)
-            activity.unregisterReceiver(receiver)
-            receiver.registered = false
-        }
-
-        return true
+        listener?.onStartScanDevices()
     }
 
 
-    private inner class BluetoothReceiver(): BroadcastReceiver() {
-
-        var registered = false
-
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent?.action
-            if (BluetoothDevice.ACTION_FOUND != action) return
-
-            val device: BluetoothDevice = intent.parcelable(BluetoothDevice.EXTRA_DEVICE)?: return
-            println("device ${device.name}")
-
-        }
+    companion object {
+        const val APP_KEY_UUID = "3c9dcf0a-7728-430d-88ea-480723dc4fdc"
     }
 
 }

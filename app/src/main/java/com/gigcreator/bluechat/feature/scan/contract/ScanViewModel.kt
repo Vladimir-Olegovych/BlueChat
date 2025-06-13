@@ -15,6 +15,7 @@ class ScanViewModel(
         }
     }
     private fun determineNavRoute(isBluetoothEnabled: Boolean) {
+        if (!permissionUseCase.arePermissionsGranted()) return
         if (isBluetoothEnabled) setEffect(ScanContract.Effect.StartScan)
         else setEffect(ScanContract.Effect.OpenBluetooth)
     }

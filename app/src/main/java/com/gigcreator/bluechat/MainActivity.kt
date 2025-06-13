@@ -6,8 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.gigcreator.bluechat.core.activity.ActivityResultUtils
+import com.gigcreator.bluechat.core.bluetooth.BluetoothReceiverManager
 import com.gigcreator.bluechat.core.feature.Destination
-import com.gigcreator.bluechat.core.feature.Feature
 import com.gigcreator.bluechat.core.fragment.FeatureFragment
 import com.gigcreator.bluechat.core.navigation.NavController
 import com.gigcreator.bluechat.core.navigation.NavigationListener
@@ -16,9 +16,11 @@ import com.gigcreator.bluechat.feature.scan.ScanFragment
 import com.gigcreator.bluechat.feature.splash.SplashFragment
 import com.gigcreator.bluechat.feature.splash.screens.SplashDestinations
 import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
 
+    private val bluetoothReceiverManager by inject<BluetoothReceiverManager>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        bluetoothReceiverManager.registerBluetoothReceiver(this)
         ActivityResultUtils.initialize(this)
 
         val features = arrayOf<FeatureFragment>(
@@ -69,5 +72,10 @@ class MainActivity : AppCompatActivity() {
                 .commit()
             return
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        bluetoothReceiverManager.unregisterBluetoothReceiver(this)
     }
 }
