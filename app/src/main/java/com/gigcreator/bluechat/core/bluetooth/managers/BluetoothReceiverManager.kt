@@ -1,4 +1,4 @@
-package com.gigcreator.bluechat.core.bluetooth
+package com.gigcreator.bluechat.core.bluetooth.managers
 
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
@@ -7,7 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.gigcreator.bluechat.core.bluetooth.listeners.BluetoothReceiverListener
+import com.gigcreator.bluechat.core.bluetooth.managers.listeners.BluetoothReceiverListener
 import com.gigcreator.bluechat.core.parcelable
 
 class BluetoothReceiverManager {
@@ -15,7 +15,7 @@ class BluetoothReceiverManager {
     private var listener: BluetoothReceiverListener? = null
     private val receiver = BluetoothReceiver()
 
-    fun setListener(listener: BluetoothReceiverListener) {
+    fun setListener(listener: BluetoothReceiverListener?) {
         this.listener = listener
     }
     

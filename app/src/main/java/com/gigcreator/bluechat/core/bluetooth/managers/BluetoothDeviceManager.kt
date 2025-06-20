@@ -1,9 +1,9 @@
-package com.gigcreator.bluechat.core.bluetooth
+package com.gigcreator.bluechat.core.bluetooth.managers
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import com.gigcreator.bluechat.core.bluetooth.listeners.BluetoothManagerListener
+import com.gigcreator.bluechat.core.bluetooth.managers.listeners.BluetoothManagerListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,11 +21,13 @@ class BluetoothDeviceManager(
 
     private var listener: BluetoothManagerListener? = null
 
+    fun getDeviceName(): String? = bluetoothAdapter?.name
+
     fun getBondedDevices(): Set<BluetoothDevice> {
         return bluetoothAdapter?.bondedDevices ?: emptySet()
     }
 
-    fun setListener(listener: BluetoothManagerListener) {
+    fun setListener(listener: BluetoothManagerListener?) {
         bluetoothReceiverManager.setListener(listener)
         this.listener = listener
     }
@@ -40,7 +42,6 @@ class BluetoothDeviceManager(
 
     fun connectDevice(device: BluetoothDevice) {
         device.createBond()
-
     }
 
     fun stopScanDevices(){
@@ -58,11 +59,6 @@ class BluetoothDeviceManager(
             stopScanDevices()
         }
         listener?.onStartScanDevices()
-    }
-
-
-    companion object {
-        const val APP_KEY_UUID = "3c9dcf0a-7728-430d-88ea-480723dc4fdc"
     }
 
 }

@@ -2,7 +2,6 @@ package com.gigcreator.bluechat.feature.menu.adapter
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +47,7 @@ class MenuAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun set(bluetoothDevices: Collection<BluetoothDevice>) {
+        arrayList.clear()
         arrayList.addAll(bluetoothDevices)
         notifyDataSetChanged()
     }

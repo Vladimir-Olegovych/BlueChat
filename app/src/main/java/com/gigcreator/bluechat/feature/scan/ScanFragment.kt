@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gigcreator.bluechat.core.activity.ActivityResultUtils
-import com.gigcreator.bluechat.core.bluetooth.BluetoothDeviceManager
-import com.gigcreator.bluechat.core.bluetooth.listeners.BluetoothManagerListener
+import com.gigcreator.bluechat.core.bluetooth.managers.BluetoothDeviceManager
+import com.gigcreator.bluechat.core.bluetooth.managers.listeners.BluetoothManagerListener
 import com.gigcreator.bluechat.core.fragment.FeatureFragment
 import com.gigcreator.bluechat.databinding.FragmentScanBinding
 import com.gigcreator.bluechat.feature.menu.screens.MenuDestinations
@@ -20,10 +20,10 @@ import com.gigcreator.bluechat.feature.scan.contract.ScanViewModel
 import com.gigcreator.bluechat.feature.scan.screens.ScanDestinations
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.getValue
 
-class ScanFragment : FeatureFragment(ScanDestinations.Scan) {
+class ScanFragment : FeatureFragment<ScanDestinations.Scan>() {
 
+    override val destinationClass: Class<ScanDestinations.Scan> = ScanDestinations.Scan::class.java
     private lateinit var binding: FragmentScanBinding
     private val viewModel by viewModel<ScanViewModel>()
     private val bluetoothDeviceManager by inject<BluetoothDeviceManager>()
@@ -39,7 +39,7 @@ class ScanFragment : FeatureFragment(ScanDestinations.Scan) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (!bluetoothDeviceManager.isBluetoothAvailable()) {
-            getNavController().navigate(MenuDestinations.Menu)
+            getNavController()?.navigate(MenuDestinations.Menu)
             return@onViewCreated
         }
 
@@ -80,7 +80,7 @@ class ScanFragment : FeatureFragment(ScanDestinations.Scan) {
                     ActivityResultUtils.requestResult(enableBtIntent, onSuccess = {
                         bluetoothDeviceManager.startScanDevices()
                     }, onFailure = {
-                        getNavController().navigate(MenuDestinations.Menu)
+                        getNavController()?.navigate(MenuDestinations.Menu)
                     })
                 }
             }
@@ -90,7 +90,7 @@ class ScanFragment : FeatureFragment(ScanDestinations.Scan) {
         }
 
         binding.back.setOnClickListener {
-            getNavController().navigate(MenuDestinations.Menu)
+            getNavController()?.navigate(MenuDestinations.Menu)
         }
 
         viewModel.handleEvent(ScanContract.Event.DetermineRoute(bluetoothDeviceManager.isBluetoothEnabled()))
@@ -98,6 +98,7 @@ class ScanFragment : FeatureFragment(ScanDestinations.Scan) {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        bluetoothDeviceManager.setListener(null)
         bluetoothDeviceManager.stopScanDevices()
     }
 }

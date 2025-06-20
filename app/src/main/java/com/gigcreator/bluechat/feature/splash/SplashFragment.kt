@@ -13,8 +13,9 @@ import com.gigcreator.bluechat.feature.splash.contract.SplashViewModel
 import com.gigcreator.bluechat.feature.splash.screens.SplashDestinations
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SplashFragment : FeatureFragment(SplashDestinations.Splash) {
+class SplashFragment : FeatureFragment<SplashDestinations.Splash>() {
 
+    override val destinationClass: Class<SplashDestinations.Splash> = SplashDestinations.Splash::class.java
     private lateinit var binding: FragmentSplashBinding
     private val viewModel by viewModel<SplashViewModel>()
 
@@ -30,7 +31,7 @@ class SplashFragment : FeatureFragment(SplashDestinations.Splash) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.effect.observe(viewLifecycleOwner) {
             when(it) {
-                is SplashContract.Effect.OpenMenu -> getNavController().navigate(MenuDestinations.Menu)
+                is SplashContract.Effect.OpenMenu -> getNavController()?.navigate(MenuDestinations.Menu)
                 is SplashContract.Effect.RequestPermissions -> ActivityResultUtils.requestResult(
                     array = it.permissions,
                     onSuccess = {

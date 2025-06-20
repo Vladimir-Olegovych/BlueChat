@@ -38,10 +38,4 @@ abstract class MasterViewModel<Event : ViewEvent, UiState : ViewState, Effect : 
     }
 
     abstract fun handleEvent(event: Event)
-
-    protected fun clear(){
-        _state.value = null
-        _event.value = null
-        _effect.value = null
-    }
 }
