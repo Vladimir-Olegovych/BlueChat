@@ -98,7 +98,6 @@ class ScanFragment : FeatureFragment<ScanDestinations.Scan>() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        bluetoothDeviceManager.setListener(null)
         bluetoothDeviceManager.stopScanDevices()
     }
 }

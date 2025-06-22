@@ -73,9 +73,4 @@ class MenuFragment() : FeatureFragment<MenuDestinations.Menu>() {
 
         viewModel.handleEvent(MenuContract.Event.DetermineRoute(bluetoothDeviceManager.isBluetoothEnabled()))
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        bluetoothDeviceManager.setListener(null)
-    }
 }
