@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        bluetoothClient.cancelSend()
         bluetoothServer.stop()
         bluetoothReceiverManager.unregisterBluetoothReceiver(this)
     }

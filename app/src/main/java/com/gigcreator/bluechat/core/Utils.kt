@@ -22,3 +22,12 @@ inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
 fun <T: Destination>Fragment.asFeatureFragment(): FeatureFragment<T> {
     return this as FeatureFragment<T>
 }
+
+fun textToPixels(vararg text: String): Int {
+    var size = 0
+    text.forEach {
+        size += it.length
+    }
+
+    return size * 24
+}

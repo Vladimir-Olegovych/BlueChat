@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gigcreator.bluechat.core.bluetooth.client.BluetoothClient
-import com.gigcreator.bluechat.core.bluetooth.managers.BluetoothDeviceManager
 import com.gigcreator.bluechat.core.bluetooth.server.BluetoothServer
 import com.gigcreator.bluechat.core.bluetooth.server.BluetoothServerListener
 import com.gigcreator.bluechat.core.fragment.FeatureFragment
@@ -25,7 +26,6 @@ class ChatFragment : FeatureFragment<ChatDestinations.Chat>() {
 
     private val bluetoothClient by inject<BluetoothClient>()
     private val bluetoothServer by inject<BluetoothServer>()
-    private val bluetoothDeviceManager by inject<BluetoothDeviceManager>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,13 +38,25 @@ class ChatFragment : FeatureFragment<ChatDestinations.Chat>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val device: BluetoothDevice = getCurrentDestination()?.device?: return
-        val adapter = ChatAdapter(device, bluetoothDeviceManager.getDeviceName(),
+        val adapter = ChatAdapter(
             onAdd = { message, adapter ->
                 val lastIndex = adapter.itemCount - 1
                 binding.rcView.scrollToPosition(lastIndex)
                 binding.rcView.smoothScrollToPosition(lastIndex)
             }
         )
+
+        bluetoothServer.setListener(object : BluetoothServerListener() {
+            override fun onReceiveMessage(message: String) {
+                adapter.add(ChatMessage(message = message, isCurrentDevice = false))
+            }
+        })
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.constraintLayout) { view, insets ->
+            val systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(0, systemBarInsets.top, 0, systemBarInsets.bottom)
+            insets
+        }
 
         binding.rcView.layoutManager = LinearLayoutManager(requireContext())
         binding.rcView.adapter = adapter
@@ -53,14 +65,8 @@ class ChatFragment : FeatureFragment<ChatDestinations.Chat>() {
             getNavController()?.navigate(MenuDestinations.Menu)
         }
 
-        bluetoothServer.setListener(object : BluetoothServerListener() {
-            override fun onReceiveMessage(message: String) {
-                adapter.add(ChatMessage(message = message, isCurrentDevice = false))
-            }
-        })
-
         binding.sendButton.setOnClickListener {
-            val message = binding.editText.text.toString()
+            val message = binding.editText.text.toString().trim()
             if (message.isEmpty()) return@setOnClickListener
             binding.editText.text.clear()
             bluetoothClient.send(device, message)
@@ -73,6 +79,5 @@ class ChatFragment : FeatureFragment<ChatDestinations.Chat>() {
     override fun onDestroyView() {
         super.onDestroyView()
         bluetoothServer.stop()
-        bluetoothClient.cancelSend()
     }
 }

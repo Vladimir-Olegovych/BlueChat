@@ -6,7 +6,6 @@ import com.gigcreator.bluechat.core.navigation.NavController
 
 abstract class FeatureFragment<T: Destination>(): Fragment() {
 
-
     abstract val destinationClass: Class<T>
 
     private var navController: NavController<Destination>? = null
