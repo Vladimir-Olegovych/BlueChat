@@ -54,7 +54,7 @@ class ChatFragment : FeatureFragment<ChatDestinations.Chat>() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.constraintLayout) { view, insets ->
             val systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(0, systemBarInsets.top, 0, systemBarInsets.bottom)
+            view.setPadding(0, 0, 0, systemBarInsets.bottom)
             insets
         }
 
